@@ -1,0 +1,54 @@
+{
+  "name": "VoxAssist Call Flow",
+  "description": "Default call handling workflow",
+  "steps": [
+    {
+      "step": 1,
+      "action": "greeting",
+      "prompt": "Hello! Thank you for calling. How can I assist you today?",
+      "wait_for_response": true
+    },
+    {
+      "step": 2,
+      "action": "detect_intent",
+      "use_llm": true
+    },
+    {
+      "step": 3,
+      "action": "route",
+      "conditions": {
+        "business_hours": "provide_hours",
+        "appointment_booking": "book_appointment",
+        "job_inquiry": "provide_job_info",
+        "complaint": "escalate_to_human",
+        "faq": "search_faqs",
+        "transfer": "transfer_to_human",
+        "unknown": "ask_clarification"
+      }
+    },
+    {
+      "step": 4,
+      "action": "respond",
+      "use_llm": true
+    },
+    {
+      "step": 5,
+      "action": "check_satisfaction",
+      "prompt": "Is there anything else I can help you with?",
+      "wait_for_response": true
+    },
+    {
+      "step": 6,
+      "action": "goodbye",
+      "prompt": "Thank you for calling. Have a great day!",
+      "end_call": true
+    }
+  ],
+  "escalation_triggers": [
+    "angry_sentiment",
+    "complaint_intent",
+    "explicit_transfer_request",
+    "low_confidence_intent"
+  ]
+}
+

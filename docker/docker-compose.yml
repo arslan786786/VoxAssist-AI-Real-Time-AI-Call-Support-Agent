@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  voxassist-api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: voxassist-ai
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - VAPI_API_KEY=${VAPI_API_KEY}
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+      - DATABASE_TYPE=${DATABASE_TYPE:-memory}
+    env_file:
+      - ../.env
+    volumes:
+      - ../app:/app/app
+      - ../prompts:/app/prompts
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Uncomment to add PostgreSQL database
+  # postgres:
+  #   image: postgres:15
+  #   container_name: voxassist-db
+  #   environment:
+  #     POSTGRES_DB: voxassist
+  #     POSTGRES_USER: voxassist
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD}
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+
+# volumes:
+#   postgres_data:
+
